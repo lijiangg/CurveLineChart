@@ -26,6 +26,7 @@
         _kColor = [UIColor redColor];
         _lineColorArray = @[[UIColor redColor], [UIColor greenColor], [UIColor blueColor]];
         _isOpaque = YES;
+
     
     }
     return self;
@@ -37,9 +38,6 @@
     
     //x轴位置
     CGFloat xAxisPosition = height;
-    if (_maxPercent != 1) {
-        xAxisPosition = height * _maxPercent;
-    }
     CGFloat countX = 0;
     for (int index = 0; index < _candleDataArray.count; index ++) {
         NSDictionary *dic = _candleDataArray[index];
@@ -48,6 +46,8 @@
         double hPercent = [dic[@"h"] doubleValue];
         double lPercent = [dic[@"l"] doubleValue];
         CAShapeLayer *lLayer = [CAShapeLayer lineLayerWithStrokeWidth:1 color:_kColor];
+        CAShapeLayer *rLayer = [CAShapeLayer rectLayerWithcolor:_kColor];
+        CAShapeLayer *hLayer = [CAShapeLayer lineLayerWithStrokeWidth:1 color:_kColor];
         UIBezierPath *lPath = [UIBezierPath bezierPath];
         CGFloat x = (_rowWidth + _rowSpace) * index;
         CGFloat ly = 0;
@@ -77,15 +77,22 @@
         if (oPercent > cPercent) {
             lmy = cy;
             hmy = oy;
+            //降
+            rLayer.backgroundColor = [UIColor greenColor].CGColor;
+            hLayer.strokeColor = [UIColor greenColor].CGColor;
+            lLayer.strokeColor = [UIColor greenColor].CGColor;
         }else {
             lmy = oy;
             hmy = cy;
+            //升
+            rLayer.backgroundColor = [UIColor redColor].CGColor;
+            hLayer.strokeColor = [UIColor redColor].CGColor;
+            lLayer.strokeColor = [UIColor redColor].CGColor;
         }
         
         [lPath addLineToPoint:CGPointMake(x + _rowWidth/2, lmy)];
         lLayer.path = lPath.CGPath;
         
-        CAShapeLayer *rLayer = [CAShapeLayer rectLayerWithcolor:_kColor];
         rLayer.frame = CGRectMake(x, hmy, _rowWidth, lmy - hmy);
         
         
@@ -95,7 +102,7 @@
         }else if (hPercent < 0) {
             hy = xAxisPosition + (-hPercent * height);
         }
-        CAShapeLayer *hLayer = [CAShapeLayer lineLayerWithStrokeWidth:1 color:_kColor];
+        
         UIBezierPath *hPath = [UIBezierPath bezierPath];
         [hPath moveToPoint:CGPointMake(x + _rowWidth/2, hmy)];
         [hPath addLineToPoint:CGPointMake(x + _rowWidth/2, hy)];

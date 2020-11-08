@@ -42,14 +42,23 @@
         //刷新内容
         weakSelf.contentView.candleDataArray = weakSelf.viewModel.candleDataArray;
         weakSelf.contentView.lineDataArray = weakSelf.viewModel.lineDataArray;
-        weakSelf.contentView.maxPercent = weakSelf.viewModel.maxPercent;
         weakSelf.contentView.rowWidth = weakSelf.rowWidth;
         weakSelf.contentView.rowSpace = weakSelf.rowSpace;
         [weakSelf.contentView reloadData];
     }];
-   
+    
+    //轴线
+    UIBezierPath *axisPath = [UIBezierPath bezierPath];
+    CGFloat lineWidth = 1;
+    [axisPath moveToPoint:CGPointMake(_contentEdgeInsets.left, _contentEdgeInsets.top)];
+    [axisPath addLineToPoint:CGPointMake(_contentEdgeInsets.left, self.frame.size.height - _contentEdgeInsets.bottom)];
+    [axisPath addLineToPoint:CGPointMake(self.frame.size.width - _contentEdgeInsets.right, self.frame.size.height - _contentEdgeInsets.bottom)];
+    self.lineLayer.path = axisPath.CGPath;
 }
 
+- (void)globalConfig {
+
+}
 
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -59,13 +68,14 @@
         [self initialData];
         [self initialSubview];
         [self layoutSubview];
+        [self globalConfig];
     }
     return self;
 }
 
 - (void)initialData {
     _rowWidth = 10;
-    _rowSpace = 5;
+    _rowSpace = 1;
     _viewModel = [CurveLineChartViewModel new];
     _contentEdgeInsets = UIEdgeInsetsMake(0, 20, 20, 0);
     
@@ -74,6 +84,7 @@
 - (void)initialSubview {
     [self addSubview:self.scrollView];
     [self.scrollView addSubview:self.contentView];
+    [self.layer addSublayer:self.lineLayer];
 }
 
 - (void)layoutSubview {
@@ -96,7 +107,7 @@
         _lineLayer = [CAShapeLayer new];
         _lineLayer.fillColor = [UIColor clearColor].CGColor;
         _lineLayer.strokeColor = [UIColor redColor].CGColor;
-        _lineLayer.lineWidth = 2;
+        _lineLayer.lineWidth = 1;
     }
     return _lineLayer;
 }

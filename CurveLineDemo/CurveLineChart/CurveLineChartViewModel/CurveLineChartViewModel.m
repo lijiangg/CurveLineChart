@@ -40,7 +40,7 @@
     
     //求最大值
     __block double maxValue = 0;
-    __block double minValue = 0;
+    __block double minValue = MAXFLOAT;
     for (int i = 0; i < candleDataArray.count; i ++ ) {
         NSDictionary *dic = candleDataArray[i];
         [dic enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
@@ -67,58 +67,28 @@
         }];
     }
     
-    //计算maxPercent
-    double maxPercent = 1;
-    if (maxValue > 0) {
-        if (minValue < 0) {
-            maxPercent = maxValue/(maxValue - minValue);
-        }else if(minValue > 0) {
-            
-        }else {
-            
-        }
-    }else if (maxValue < 0) {
-        if (minValue < 0) {
-            maxPercent = 0;
-        }else if(minValue > 0) {
-            //不会出现
-        }else {
-            //不会出现
-        }
-    }
-    _maxPercent = maxPercent;
     
     NSMutableArray *candleArray = [NSMutableArray new];
     for (int index = 0; index < candleDataArray.count; index ++) {
         NSDictionary *dic = candleDataArray[index];
-        double oData = [dic[@"o"] doubleValue];
-        double cData = [dic[@"c"] doubleValue];
-        double hData = [dic[@"h"] doubleValue];
-        double lData = [dic[@"l"] doubleValue];
+        double oData = [dic[@"o"] floatValue];
+        double cData = [dic[@"c"] floatValue];
+        double hData = [dic[@"h"] floatValue];
+        double lData = [dic[@"l"] floatValue];
         double oPercent = 0;
-        if (oData > 0) {
-            oPercent = oData/maxValue;
-        }else if (oData < 0) {
-            oPercent = -oData/minValue;
-        }
         double cPercent = 0;
-        if (cData > 0) {
-            cPercent = cData/maxValue;
-        }else if (cData < 0) {
-            cPercent = -cData/minValue;
-        }
         double hPercent = 0;
-        if (hData > 0) {
-            hPercent = hData/maxValue;
-        }else if (hData < 0) {
-            hPercent = -hData/minValue;
-        }
         double lPercent = 0;
-        if (lData > 0) {
-            lPercent = lData/maxValue;
-        }else if (lData < 0) {
-            lPercent = -lData/minValue;
+        if (maxValue == minValue) {
+            oPercent = 1;
+            cPercent = 1;
+            hPercent = 1;
+            lPercent = 1;
         }
+        oPercent = (oData - minValue)/(maxValue - minValue);
+        cPercent = (cData - minValue)/(maxValue - minValue);
+        hPercent = (hData - minValue)/(maxValue - minValue);
+        lPercent = (lData - minValue)/(maxValue - minValue);
         [candleArray addObject:@{
             @"o":@(oPercent),
             @"c":@(cPercent),
@@ -136,11 +106,7 @@
         [rowArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger j, BOOL * _Nonnull stop) {
             double data = [obj doubleValue];
             double percent = 0;
-            if (data > 0) {
-                percent = data/maxValue;
-            }else if (data < 0) {
-                percent = -data/minValue;
-            }
+            percent = (data - minValue)/(maxValue - minValue);
             [rowLineArray addObject:@(percent)];
         }];
         [lineArray addObject:rowLineArray];

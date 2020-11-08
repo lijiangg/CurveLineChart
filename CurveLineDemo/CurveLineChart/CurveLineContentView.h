@@ -11,8 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CurveLineContentView : UIView
 
-//默认 1.0
-@property (assign, nonatomic) double maxPercent;
+
 @property (assign, nonatomic) CGFloat rowWidth;
 @property (assign, nonatomic) CGFloat rowSpace;
 @property (strong, nonatomic) UIColor *kColor;
