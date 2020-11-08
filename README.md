@@ -3,4 +3,4 @@
 
 k线曲线混合展示
 
-![image](https://github.com/lijiangg/CurveLineChart/blob/master/mdc.png)
+![image](https://github.com/lijiangg/CurveLineChart/blob/master/phone.png)
